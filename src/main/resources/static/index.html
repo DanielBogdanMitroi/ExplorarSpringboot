@@ -334,17 +334,45 @@
                     return;
                 }
 
-                usersList.innerHTML = users.map(user => `
-                    <div class="user-card">
-                        <p><strong>ID:</strong> ${user.id}</p>
-                        <p><strong>Nombre:</strong> ${user.name}</p>
-                        <p><strong>Email:</strong> ${user.email}</p>
-                        <div class="user-actions">
-                            <button onclick="fillUpdateForm(${user.id}, '${user.name}', '${user.email}')">Editar</button>
-                            <button class="btn-delete" onclick="deleteUserQuick(${user.id})">Eliminar</button>
-                        </div>
-                    </div>
-                `).join('');
+                usersList.innerHTML = '';
+                users.forEach(user => {
+                    const userCard = document.createElement('div');
+                    userCard.className = 'user-card';
+                    
+                    const idText = document.createElement('p');
+                    idText.innerHTML = '<strong>ID:</strong> ';
+                    idText.appendChild(document.createTextNode(user.id));
+                    
+                    const nameText = document.createElement('p');
+                    nameText.innerHTML = '<strong>Nombre:</strong> ';
+                    nameText.appendChild(document.createTextNode(user.name));
+                    
+                    const emailText = document.createElement('p');
+                    emailText.innerHTML = '<strong>Email:</strong> ';
+                    emailText.appendChild(document.createTextNode(user.email));
+                    
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'user-actions';
+                    
+                    const editBtn = document.createElement('button');
+                    editBtn.textContent = 'Editar';
+                    editBtn.onclick = () => fillUpdateForm(user.id, user.name, user.email);
+                    
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn-delete';
+                    deleteBtn.textContent = 'Eliminar';
+                    deleteBtn.onclick = () => deleteUserQuick(user.id);
+                    
+                    actionsDiv.appendChild(editBtn);
+                    actionsDiv.appendChild(deleteBtn);
+                    
+                    userCard.appendChild(idText);
+                    userCard.appendChild(nameText);
+                    userCard.appendChild(emailText);
+                    userCard.appendChild(actionsDiv);
+                    
+                    usersList.appendChild(userCard);
+                });
             } catch (error) {
                 usersList.innerHTML = '<p class="response error" style="display:block;">Error al cargar usuarios: ' + error.message + '</p>';
             }

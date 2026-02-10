@@ -17,10 +17,10 @@ public class MainController {
     // CREATE - Add a new user
     @PostMapping(path="/add")
     public @ResponseBody ResponseEntity<String> addNewUser (@RequestParam String name, @RequestParam String email) {
-        User n = new User();
-        n.setName(name);
-        n.setEmail(email);
-        userRepository.save(n);
+        User newUser = new User();
+        newUser.setName(name);
+        newUser.setEmail(email);
+        userRepository.save(newUser);
         return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully");
     }
 

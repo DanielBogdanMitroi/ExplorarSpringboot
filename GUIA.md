@@ -88,24 +88,34 @@ FLUSH PRIVILEGES;
 
 ### Método 1: Usando el Script Automático
 ```bash
+# Configurar la contraseña (requerido)
+export MYSQL_PASSWORD=ThePassword
+
+# Ejecutar el script
 ./run.sh
 ```
 
 ### Método 2: Usando Maven
 ```bash
-# 1. Compilar el proyecto
+# 1. Configurar la contraseña (requerido)
+export MYSQL_PASSWORD=ThePassword
+
+# 2. Compilar el proyecto
 mvn clean install
 
-# 2. Ejecutar la aplicación
+# 3. Ejecutar la aplicación
 mvn spring-boot:run
 ```
 
 ### Método 3: Usando el JAR generado
 ```bash
-# 1. Compilar y empaquetar
+# 1. Configurar la contraseña (requerido)
+export MYSQL_PASSWORD=ThePassword
+
+# 2. Compilar y empaquetar
 mvn clean package
 
-# 2. Ejecutar el JAR
+# 3. Ejecutar el JAR
 java -jar target/accessing-data-mysql-0.0.1-SNAPSHOT.jar
 ```
 

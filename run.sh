@@ -16,9 +16,22 @@ fi
 echo "✅ Java detectado: $(java -version 2>&1 | head -n 1)"
 echo ""
 
+# Verificar que la contraseña de MySQL esté configurada
+if [ -z "$MYSQL_PASSWORD" ]; then
+    echo "⚠️  Advertencia: Variable MYSQL_PASSWORD no configurada"
+    echo "   Debe configurar la contraseña antes de ejecutar:"
+    echo "   export MYSQL_PASSWORD=su_contraseña"
+    echo ""
+    read -p "¿Desea continuar de todas formas? (s/n): " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Ss]$ ]]; then
+        exit 1
+    fi
+fi
+
 # Verificar si MySQL está corriendo
 if command -v mysql &> /dev/null; then
-    if mysql -u springuser -pThePassword -e "USE db_example;" 2>/dev/null; then
+    if [ ! -z "$MYSQL_PASSWORD" ] && mysql -u "${MYSQL_USER:-springuser}" -p"$MYSQL_PASSWORD" -e "USE db_example;" 2>/dev/null; then
         echo "✅ Conexión a MySQL exitosa"
     else
         echo "⚠️  Advertencia: No se pudo conectar a MySQL"

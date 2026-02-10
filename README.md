@@ -27,10 +27,23 @@ FLUSH PRIVILEGES;
 ```
 
 ### 2. Configurar las credenciales
-Puedes modificar la configuración en `src/main/resources/application.properties` o usar variables de entorno:
+**IMPORTANTE**: Debe configurar la contraseña usando variables de entorno:
+
+```bash
+# Linux/Mac
+export MYSQL_PASSWORD=ThePassword
+
+# Windows (CMD)
+set MYSQL_PASSWORD=ThePassword
+
+# Windows (PowerShell)
+$env:MYSQL_PASSWORD="ThePassword"
+```
+
+También puede configurar otras opciones mediante variables de entorno:
 - `MYSQL_HOST`: Host de MySQL (por defecto: localhost)
 - `MYSQL_USER`: Usuario de MySQL (por defecto: springuser)
-- `MYSQL_PASSWORD`: Contraseña de MySQL (por defecto: ThePassword)
+- `MYSQL_PASSWORD`: Contraseña de MySQL (**requerido**, sin valor por defecto)
 
 ## Instalación y Ejecución
 
@@ -47,6 +60,10 @@ mvn clean install
 
 ### 3. Ejecutar la aplicación
 ```bash
+# Configurar la contraseña de MySQL (requerido)
+export MYSQL_PASSWORD=ThePassword
+
+# Ejecutar la aplicación
 mvn spring-boot:run
 ```
 
