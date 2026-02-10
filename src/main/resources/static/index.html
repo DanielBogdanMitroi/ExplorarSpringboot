@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD MySQL - Spring Boot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .response.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .response.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        #usersList {
+            margin-top: 20px;
+        }
+
+        .user-card {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: box-shadow 0.3s;
+        }
+
+        .user-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .user-card strong {
+            color: #667eea;
+        }
+
+        .user-actions {
+            margin-top: 10px;
+        }
+
+        .user-actions button {
+            margin-right: 10px;
+            padding: 8px 20px;
+            font-size: 0.9em;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            margin-left: 10px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 CRUD MySQL - Spring Boot</h1>
+            <p>Sistema de gestión de usuarios con REST API</p>
+        </header>
+
+        <div class="content">
+            <!-- CREATE -->
+            <div class="section">
+                <h2>➕ Crear Usuario</h2>
+                <form id="createForm">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Nombre:</label>
+                            <input type="text" id="createName" required placeholder="Ej: Juan Pérez">
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="email" id="createEmail" required placeholder="Ej: juan@example.com">
+                        </div>
+                    </div>
+                    <button type="submit">Crear Usuario</button>
+                    <div id="createResponse" class="response"></div>
+                </form>
+            </div>
+
+            <!-- READ ALL -->
+            <div class="section">
+                <h2>📋 Listar Todos los Usuarios</h2>
+                <button onclick="getAllUsers()">Cargar Usuarios</button>
+                <div id="usersList"></div>
+            </div>
+
+            <!-- READ BY ID -->
+            <div class="section">
+                <h2>🔍 Buscar Usuario por ID</h2>
+                <form id="getByIdForm">
+                    <div class="form-group">
+                        <label>ID del Usuario:</label>
+                        <input type="number" id="getUserId" required placeholder="Ej: 1">
+                    </div>
+                    <button type="submit">Buscar Usuario</button>
+                    <div id="getByIdResponse" class="response"></div>
+                </form>
+            </div>
+
+            <!-- UPDATE -->
+            <div class="section">
+                <h2>✏️ Actualizar Usuario</h2>
+                <form id="updateForm">
+                    <div class="form-group">
+                        <label>ID del Usuario:</label>
+                        <input type="number" id="updateId" required placeholder="Ej: 1">
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Nuevo Nombre:</label>
+                            <input type="text" id="updateName" placeholder="Dejar vacío para no cambiar">
+                        </div>
+                        <div class="form-group">
+                            <label>Nuevo Email:</label>
+                            <input type="email" id="updateEmail" placeholder="Dejar vacío para no cambiar">
+                        </div>
+                    </div>
+                    <button type="submit">Actualizar Usuario</button>
+                    <div id="updateResponse" class="response"></div>
+                </form>
+            </div>
+
+            <!-- DELETE -->
+            <div class="section">
+                <h2>🗑️ Eliminar Usuario</h2>
+                <form id="deleteForm">
+                    <div class="form-group">
+                        <label>ID del Usuario:</label>
+                        <input type="number" id="deleteId" required placeholder="Ej: 1">
+                    </div>
+                    <button type="submit" class="btn-delete">Eliminar Usuario</button>
+                    <div id="deleteResponse" class="response"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/users';
+
+        function showResponse(elementId, message, isSuccess) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = isSuccess ? 'response success' : 'response error';
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        }
+
+        // CREATE
+        document.getElementById('createForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('createName').value;
+            const email = document.getElementById('createEmail').value;
+
+            try {
+                const response = await fetch(`${API_URL}/add?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`, {
+                    method: 'POST'
+                });
+                const text = await response.text();
+                showResponse('createResponse', text, response.ok);
+                if (response.ok) {
+                    document.getElementById('createForm').reset();
+                    getAllUsers();
+                }
+            } catch (error) {
+                showResponse('createResponse', 'Error: ' + error.message, false);
+            }
+        });
+
+        // READ ALL
+        async function getAllUsers() {
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = '<div class="loading"></div> Cargando usuarios...';
+
+            try {
+                const response = await fetch(`${API_URL}/all`);
+                const users = await response.json();
+
+                if (users.length === 0) {
+                    usersList.innerHTML = '<p>No hay usuarios registrados.</p>';
+                    return;
+                }
+
+                usersList.innerHTML = users.map(user => `
+                    <div class="user-card">
+                        <p><strong>ID:</strong> ${user.id}</p>
+                        <p><strong>Nombre:</strong> ${user.name}</p>
+                        <p><strong>Email:</strong> ${user.email}</p>
+                        <div class="user-actions">
+                            <button onclick="fillUpdateForm(${user.id}, '${user.name}', '${user.email}')">Editar</button>
+                            <button class="btn-delete" onclick="deleteUserQuick(${user.id})">Eliminar</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                usersList.innerHTML = '<p class="response error" style="display:block;">Error al cargar usuarios: ' + error.message + '</p>';
+            }
+        }
+
+        // READ BY ID
+        document.getElementById('getByIdForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('getUserId').value;
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    const message = `Usuario encontrado:\nID: ${data.id}\nNombre: ${data.name}\nEmail: ${data.email}`;
+                    showResponse('getByIdResponse', message, true);
+                } else {
+                    showResponse('getByIdResponse', data, false);
+                }
+            } catch (error) {
+                showResponse('getByIdResponse', 'Error: ' + error.message, false);
+            }
+        });
+
+        // UPDATE
+        document.getElementById('updateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('updateId').value;
+            const name = document.getElementById('updateName').value;
+            const email = document.getElementById('updateEmail').value;
+
+            if (!name && !email) {
+                showResponse('updateResponse', 'Debe proporcionar al menos un campo para actualizar', false);
+                return;
+            }
+
+            const params = new URLSearchParams();
+            if (name) params.append('name', name);
+            if (email) params.append('email', email);
+
+            try {
+                const response = await fetch(`${API_URL}/${id}?${params}`, {
+                    method: 'PUT'
+                });
+                const text = await response.text();
+                showResponse('updateResponse', text, response.ok);
+                if (response.ok) {
+                    document.getElementById('updateForm').reset();
+                    getAllUsers();
+                }
+            } catch (error) {
+                showResponse('updateResponse', 'Error: ' + error.message, false);
+            }
+        });
+
+        // DELETE
+        document.getElementById('deleteForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('deleteId').value;
+
+            if (!confirm('¿Está seguro de que desea eliminar este usuario?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+                const text = await response.text();
+                showResponse('deleteResponse', text, response.ok);
+                if (response.ok) {
+                    document.getElementById('deleteForm').reset();
+                    getAllUsers();
+                }
+            } catch (error) {
+                showResponse('deleteResponse', 'Error: ' + error.message, false);
+            }
+        });
+
+        function fillUpdateForm(id, name, email) {
+            document.getElementById('updateId').value = id;
+            document.getElementById('updateName').value = name;
+            document.getElementById('updateEmail').value = email;
+            document.querySelector('#updateForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function deleteUserQuick(id) {
+            if (!confirm('¿Está seguro de que desea eliminar este usuario?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    getAllUsers();
+                } else {
+                    alert('Error al eliminar usuario');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Load users on page load
+        window.addEventListener('load', getAllUsers);
+    </script>
+</body>
+</html>
