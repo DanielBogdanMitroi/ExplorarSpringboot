@@ -29,14 +29,28 @@ if [ -z "$MYSQL_PASSWORD" ]; then
     fi
 fi
 
-# Verificar si MySQL está corriendo
+# Verificar si MySQL está corriendo (sin exponer la contraseña)
 if command -v mysql &> /dev/null; then
-    if [ ! -z "$MYSQL_PASSWORD" ] && mysql -u "${MYSQL_USER:-springuser}" -p"$MYSQL_PASSWORD" -e "USE db_example;" 2>/dev/null; then
-        echo "✅ Conexión a MySQL exitosa"
-    else
-        echo "⚠️  Advertencia: No se pudo conectar a MySQL"
-        echo "   Asegúrese de que MySQL esté corriendo y configurado"
-        echo "   Puede ejecutar: mysql -u root -p < setup-database.sql"
+    if [ ! -z "$MYSQL_PASSWORD" ]; then
+        # Usar un archivo temporal para las credenciales (más seguro que -p en línea de comandos)
+        TEMP_CNF=$(mktemp)
+        cat > "$TEMP_CNF" << EOF
+[client]
+user=${MYSQL_USER:-springuser}
+password=$MYSQL_PASSWORD
+EOF
+        chmod 600 "$TEMP_CNF"
+        
+        if mysql --defaults-extra-file="$TEMP_CNF" -e "USE db_example;" 2>/dev/null; then
+            echo "✅ Conexión a MySQL exitosa"
+        else
+            echo "⚠️  Advertencia: No se pudo conectar a MySQL"
+            echo "   Asegúrese de que MySQL esté corriendo y configurado"
+            echo "   Puede ejecutar: mysql -u root -p < setup-database.sql"
+        fi
+        
+        # Eliminar el archivo temporal de credenciales
+        rm -f "$TEMP_CNF"
     fi
 else
     echo "⚠️  MySQL no detectado. Asegúrese de que esté instalado y corriendo"

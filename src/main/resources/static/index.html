@@ -388,7 +388,8 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    const message = `Usuario encontrado:\nID: ${data.id}\nNombre: ${data.name}\nEmail: ${data.email}`;
+                    // Safe: Using textContent for user-controlled data
+                    const message = 'Usuario encontrado:\nID: ' + data.id + '\nNombre: ' + data.name + '\nEmail: ' + data.email;
                     showResponse('getByIdResponse', message, true);
                 } else {
                     showResponse('getByIdResponse', data, false);
