@@ -33,6 +33,8 @@
 
 ```bash
 # Navega a la carpeta bin de MySQL en WAMP
+# Reemplaza mysql8.0.X con tu versión específica de MySQL (por ejemplo, mysql8.0.32)
+# La versión exacta puede variar según tu instalación de WAMP
 cd C:\wamp64\bin\mysql\mysql8.0.X\bin
 
 # Ejecuta el script (reemplaza la ruta con la ubicación de tu archivo)
