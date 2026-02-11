@@ -21,7 +21,7 @@ USE `db_example`;
 -- ========================================
 
 CREATE TABLE IF NOT EXISTS `user` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
