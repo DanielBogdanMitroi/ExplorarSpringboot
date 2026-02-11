@@ -29,13 +29,17 @@
    - Haz clic en ella y verifica que la tabla `user` existe
    - Haz clic en la tabla `user` y luego en **"Examinar"** para ver los datos de ejemplo
 
-### Opción 2: Usar la Línea de Comandos de MySQL
+### Opción 2: Usar la Línea de Comandos de MySQL/MariaDB
 
 ```bash
+# Para MySQL en WAMP:
 # Navega a la carpeta bin de MySQL en WAMP
-# Reemplaza mysql8.0.X con tu versión específica de MySQL (por ejemplo, mysql8.0.32)
-# La versión exacta puede variar según tu instalación de WAMP
+# Reemplaza mysql8.0.X con tu versión específica (por ejemplo, mysql8.0.32)
 cd C:\wamp64\bin\mysql\mysql8.0.X\bin
+
+# Para MariaDB en WAMP (versiones recientes):
+# Reemplaza mariadb10.x.x con tu versión específica (por ejemplo, mariadb10.11.2)
+cd C:\wamp64\bin\mariadb\mariadb10.x.x\bin
 
 # Ejecuta el script (reemplaza la ruta con la ubicación de tu archivo)
 mysql -u root -p < C:\ruta\a\tu\wamp-setup-database.sql
@@ -43,6 +47,9 @@ mysql -u root -p < C:\ruta\a\tu\wamp-setup-database.sql
 # Si no tienes contraseña para root (por defecto en WAMP):
 mysql -u root < C:\ruta\a\tu\wamp-setup-database.sql
 ```
+
+**Nota**: Las versiones recientes de WAMP Server pueden incluir MariaDB en lugar de MySQL. 
+Verifica tu carpeta `C:\wamp64\bin\` para determinar qué base de datos tienes instalada.
 
 ## 🚀 Ejecutar la Aplicación
 
