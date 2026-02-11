@@ -69,6 +69,16 @@ mvn spring-boot:run
 
 La aplicación se iniciará en `http://localhost:8080`
 
+## 🔧 Configuración con WAMP
+
+Esta aplicación ahora soporta WAMP Server con MariaDB. Para configurar:
+
+1. Consulta la guía completa en [WAMP-SETUP.md](WAMP-SETUP.md)
+2. Importa el script `wamp-setup-database.sql` en phpMyAdmin
+3. Ejecuta la aplicación con `mvnw spring-boot:run`
+
+Para más detalles sobre Docker u otras configuraciones, consulta las secciones correspondientes en este README.
+
 ## API Endpoints
 
 ### CREATE - Crear un nuevo usuario
