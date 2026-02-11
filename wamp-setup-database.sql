@@ -38,7 +38,8 @@ INSERT INTO `user` (`name`, `email`) VALUES
 ('Carlos López', 'carlos.lopez@example.com'),
 ('Ana Martínez', 'ana.martinez@example.com'),
 ('Luis Rodríguez', 'luis.rodriguez@example.com')
-ON DUPLICATE KEY UPDATE name=VALUES(name);
+AS new
+ON DUPLICATE KEY UPDATE name=new.name;
 
 -- ========================================
 -- Verificar la creación
