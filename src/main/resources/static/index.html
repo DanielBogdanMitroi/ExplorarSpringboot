@@ -392,15 +392,17 @@
                 const response = await fetch(`${API_URL}/${id}`);
 
                 if (response.ok) {
+                    // Solo parsear como JSON si la respuesta fue exitosa (200)
                     const data = await response.json();
                     const message = 'Usuario encontrado:\nID: ' + data.id + '\nNombre: ' + data.name + '\nEmail: ' + data.email;
                     showResponse('getByIdResponse', message, true);
                 } else {
+                    // Para errores (404, 400, etc.), leer como texto plano
                     const errorText = await response.text();
                     showResponse('getByIdResponse', errorText, false);
                 }
             } catch (error) {
-                showResponse('getByIdResponse', 'Error: ' + error.message, false);
+                showResponse('getByIdResponse', 'Error al buscar usuario: ' + error.message, false);
             }
         });
 
