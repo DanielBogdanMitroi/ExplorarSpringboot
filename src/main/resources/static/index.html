@@ -302,8 +302,13 @@
         // CREATE
         document.getElementById('createForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const name = document.getElementById('createName').value;
-            const email = document.getElementById('createEmail').value;
+            const name = document.getElementById('createName').value.trim();
+            const email = document.getElementById('createEmail').value.trim();
+
+            if (name.length < 2) {
+                showResponse('createResponse', 'El nombre debe tener al menos 2 caracteres', false);
+                return;
+            }
 
             try {
                 const response = await fetch(`${API_URL}/add?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`, {
@@ -385,14 +390,14 @@
 
             try {
                 const response = await fetch(`${API_URL}/${id}`);
-                const data = await response.json();
 
                 if (response.ok) {
-                    // Safe: Using textContent for user-controlled data
+                    const data = await response.json();
                     const message = 'Usuario encontrado:\nID: ' + data.id + '\nNombre: ' + data.name + '\nEmail: ' + data.email;
                     showResponse('getByIdResponse', message, true);
                 } else {
-                    showResponse('getByIdResponse', data, false);
+                    const errorText = await response.text();
+                    showResponse('getByIdResponse', errorText, false);
                 }
             } catch (error) {
                 showResponse('getByIdResponse', 'Error: ' + error.message, false);
