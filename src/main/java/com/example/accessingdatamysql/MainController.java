@@ -15,7 +15,7 @@ public class MainController {
     @Autowired
     private UserRepository userRepository;
 
-    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
     // CREATE - Add a new user
     @PostMapping(path="/add")
